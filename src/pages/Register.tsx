@@ -1,6 +1,7 @@
 import { useState, FormEvent, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { isValidEmail, EMAIL_VALIDATION_MESSAGE } from '../utils/email'
 import './Auth.css'
 
 export function Register() {
@@ -19,13 +20,17 @@ export function Register() {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     setError('')
+    if (!isValidEmail(email.trim())) {
+      setError(EMAIL_VALIDATION_MESSAGE)
+      return
+    }
     if (password !== confirmPassword) {
       setError('Passwords do not match')
       return
     }
     const result = register(name.trim(), email.trim(), password)
     if (result.ok) {
-      navigate('/', { replace: true })
+      navigate('/login', { replace: true })
     } else {
       setError(result.error ?? 'Registration failed')
     }

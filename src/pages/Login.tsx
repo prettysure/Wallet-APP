@@ -1,6 +1,7 @@
 import { useState, FormEvent, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { isValidEmail, EMAIL_VALIDATION_MESSAGE } from '../utils/email'
 import './Auth.css'
 
 export function Login() {
@@ -17,6 +18,10 @@ export function Login() {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     setError('')
+    if (!isValidEmail(email.trim())) {
+      setError(EMAIL_VALIDATION_MESSAGE)
+      return
+    }
     const result = login(email.trim(), password)
     if (result.ok) {
       navigate('/', { replace: true })

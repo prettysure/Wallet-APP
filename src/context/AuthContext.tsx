@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react'
+import { isValidEmail, EMAIL_VALIDATION_MESSAGE } from '../utils/email'
 
 const STORAGE_KEY = 'wallet-app-user'
 
@@ -42,6 +43,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback((email: string, password: string) => {
     const key = email.trim().toLowerCase()
+    if (!isValidEmail(key)) {
+      return { ok: false, error: EMAIL_VALIDATION_MESSAGE }
+    }
     const stored = usersStore.get(key)
     if (!stored || stored.password !== password) {
       return { ok: false, error: 'Invalid email or password' }
@@ -52,8 +56,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = useCallback((name: string, email: string, password: string) => {
     const key = email.trim().toLowerCase()
+    if (!isValidEmail(key)) {
+      return { ok: false, error: EMAIL_VALIDATION_MESSAGE }
+    }
     if (usersStore.has(key)) {
-      return { ok: false, error: 'An account with this email already exists' }
+      return { ok: false, error: 'This email is already registered. Please sign in or use a different email.' }
     }
     if (password.length < 6) {
       return { ok: false, error: 'Password must be at least 6 characters' }
@@ -64,7 +71,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       email: key,
     }
     usersStore.set(key, { user, password })
-    setUser(user)
     return { ok: true }
   }, [])
 
