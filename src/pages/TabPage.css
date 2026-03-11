@@ -31,6 +31,136 @@
   font-size: 0.9375rem;
 }
 
+.tab-page-card {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.tab-page-list {
+  display: grid;
+  gap: 12px;
+}
+
+.tab-page-list-row {
+  display: grid;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
+.tab-page-list-row:last-child {
+  border-bottom: none;
+}
+
+.tab-page-list-row--clickable {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+.tab-page-list-row--clickable:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.tab-page-list-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.tab-page-list-sub {
+  margin-top: 6px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.tab-page-date {
+  color: var(--text-muted);
+  opacity: 0.8;
+  font-size: 0.8rem;
+}
+
+.tab-page-list-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+
+.tab-page-kv {
+  display: grid;
+  gap: 2px;
+  text-align: right;
+}
+
+.tab-page-kv span {
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+}
+
+.tab-page-kv strong {
+  color: var(--text);
+  font-size: 0.9375rem;
+}
+
+.tab-page-kv--green {
+  color: var(--accent-green) !important;
+}
+
+.tab-page-kv--red {
+  color: var(--accent-red) !important;
+}
+
+.tab-page-pill {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.tab-page-pill--completed {
+  border-color: rgba(34, 197, 94, 0.35);
+  color: var(--accent-green);
+  background: rgba(34, 197, 94, 0.08);
+}
+
+.tab-page-pill--pending {
+  border-color: rgba(245, 158, 11, 0.35);
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.08);
+}
+
+.tab-page-pill--failed {
+  border-color: rgba(239, 68, 68, 0.35);
+  color: var(--accent-red);
+  background: rgba(239, 68, 68, 0.08);
+}
+
+@media (max-width: 380px) {
+  .tab-page-list-details {
+    grid-template-columns: 1fr;
+  }
+  .tab-page-kv {
+    text-align: left;
+  }
+}
+
 .account-card {
   display: flex;
   flex-direction: column;
@@ -59,6 +189,14 @@
   font-size: 0.9375rem;
   font-weight: 500;
   color: var(--text);
+}
+
+.account-value--green {
+  color: var(--accent-green);
+}
+
+.account-value--red {
+  color: var(--accent-red);
 }
 
 .account-logout {

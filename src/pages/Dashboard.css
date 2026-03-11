@@ -58,9 +58,16 @@
   display: block;
   font-size: 0.8125rem;
   color: var(--text-muted);
-  margin-bottom: 10px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
+}
+
+.dashboard-balance-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
 }
 
 .dashboard-balance-row {
@@ -83,6 +90,49 @@
 .dashboard-balance-actions {
   display: flex;
   gap: 10px;
+}
+
+.dashboard-balance-tools {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dashboard-icon-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+}
+
+.dashboard-icon-btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--text-muted);
+}
+
+.dashboard-icon-btn-symbol {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+}
+
+.dashboard-icon-svg svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: var(--text-secondary);
+  stroke-width: 1.3;
+}
+
+.dashboard-icon-svg rect {
+  fill: none;
 }
 
 .dashboard-quickpay-section {
@@ -172,12 +222,15 @@
 }
 
 .dashboard-btn {
-  padding: 10px 18px;
+  padding: 10px 16px;
   border-radius: var(--radius-sm);
   font-size: 0.875rem;
   font-weight: 600;
   border: none;
   transition: filter 0.2s ease, transform 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .dashboard-btn:active {
@@ -202,6 +255,22 @@
 .dashboard-btn-withdraw:hover {
   background: var(--bg-hover);
   border-color: var(--text-muted);
+}
+
+.dashboard-btn-transfer {
+  background: #f59e0b;
+  color: #111827;
+}
+
+.dashboard-btn-transfer:hover {
+  filter: brightness(1.08);
+}
+
+.dashboard-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
 }
 
 .dashboard-chart-section {
