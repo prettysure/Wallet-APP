@@ -1,0 +1,82 @@
+:root {
+  --bg: #0a0e14;
+  --bg-card: #131920;
+  --bg-elevated: #1a212b;
+  --bg-hover: #222b38;
+  --text: #f0f4f8;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --accent: #0ea5e9;
+  --accent-hover: #38bdf8;
+  --accent-green: #22c55e;
+  --accent-green-dim: #16a34a;
+  --accent-red: #ef4444;
+  --accent-red-dim: #dc2626;
+  --border: #1e293b;
+  --border-focus: #0ea5e9;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-lg: 20px;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.25);
+  --transition: 0.2s ease;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  transition: background-color var(--transition), color var(--transition), border-color var(--transition), transform var(--transition);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+input {
+  font-family: inherit;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color var(--transition), opacity var(--transition);
+}
+
+a:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+
+/* App container: mobile-first, max-width on larger screens */
+.app-container {
+  max-width: 420px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 0 20px;
+  padding-bottom: env(safe-area-inset-bottom, 24px);
+}

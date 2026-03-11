@@ -1,0 +1,112 @@
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--bg);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 36px 32px;
+  box-shadow: var(--shadow);
+}
+
+.auth-title {
+  font-size: 1.625rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin: 0 0 6px 0;
+  color: var(--text);
+}
+
+.auth-subtitle {
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+  margin: 0 0 28px 0;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.auth-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 1rem;
+}
+
+.auth-input::placeholder {
+  color: var(--text-muted);
+}
+
+.auth-input:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+}
+
+.auth-error {
+  color: var(--accent-red);
+  font-size: 0.875rem;
+  margin: 0;
+  padding: 8px 0 0;
+}
+
+.auth-submit {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, var(--accent) 0%, #0284c7 100%);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+  letter-spacing: 0.01em;
+}
+
+.auth-submit:hover {
+  background: linear-gradient(135deg, var(--accent-hover) 0%, var(--accent) 100%);
+  filter: brightness(1.05);
+}
+
+.auth-submit:active {
+  transform: scale(0.99);
+}
+
+.auth-switch {
+  text-align: center;
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+  margin: 28px 0 0 0;
+}
+
+.auth-switch a {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.auth-switch a:hover {
+  color: var(--accent-hover);
+}
