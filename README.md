@@ -1,6 +1,6 @@
-# Wallet App
+# E-Wallet App
 
-A wallet app with register, login, and a dashboard showing performance data.
+An e-wallet app for depositing money, paying bills, and withdrawing to other funding sources. Includes user registration, login, and a dashboard with available balance, balance change metrics, and balance history.
 
 ## Run locally
 

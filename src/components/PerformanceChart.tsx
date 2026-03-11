@@ -23,7 +23,7 @@ function CustomTooltip({ active, payload }: TooltipProps<number, string>) {
   const value = payload[0].value
   return (
     <div className="chart-tooltip">
-      ${value?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+      Balance: ${value?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
     </div>
   )
 }

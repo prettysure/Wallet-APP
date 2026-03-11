@@ -34,7 +34,7 @@ export function Login() {
     <div className="auth-page">
       <div className="auth-card">
         <h1 className="auth-title">Sign in</h1>
-        <p className="auth-subtitle">Welcome back to your wallet</p>
+        <p className="auth-subtitle">Sign in to your e-wallet</p>
         <form onSubmit={handleSubmit} className="auth-form">
           <label className="auth-label">
             Email

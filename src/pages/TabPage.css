@@ -1,0 +1,78 @@
+.tab-page {
+  padding: 20px 20px 24px;
+  padding-top: max(20px, env(safe-area-inset-top));
+}
+
+.tab-page-header {
+  margin-bottom: 24px;
+}
+
+.tab-page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin: 0 0 4px 0;
+  color: var(--text);
+}
+
+.tab-page-subtitle {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.tab-page-placeholder,
+.tab-page-content {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+}
+
+.account-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.account-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.account-row:last-child {
+  border-bottom: none;
+}
+
+.account-label {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.account-value {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.account-logout {
+  width: 100%;
+  padding: 14px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.account-logout:hover {
+  background: var(--bg-hover);
+  border-color: var(--text-muted);
+}

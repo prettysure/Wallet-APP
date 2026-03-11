@@ -1,0 +1,21 @@
+.app-layout {
+  min-height: 100vh;
+  max-width: 420px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.app-layout-main {
+  flex: 1;
+  min-height: 0;
+}
+
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-layout-tabs {
+  flex-shrink: 0;
+}

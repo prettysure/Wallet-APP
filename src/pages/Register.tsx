@@ -9,6 +9,7 @@ export function Register() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [agreedToTerms, setAgreedToTerms] = useState(false)
   const [error, setError] = useState('')
   const { user, register } = useAuth()
   const navigate = useNavigate()
@@ -28,6 +29,10 @@ export function Register() {
       setError('Passwords do not match')
       return
     }
+    if (!agreedToTerms) {
+      setError('Please agree to the Privacy Policy and Terms of Service')
+      return
+    }
     const result = register(name.trim(), email.trim(), password)
     if (result.ok) {
       navigate('/login', { replace: true })
@@ -40,7 +45,7 @@ export function Register() {
     <div className="auth-page">
       <div className="auth-card">
         <h1 className="auth-title">Create account</h1>
-        <p className="auth-subtitle">Sign up to get your wallet</p>
+        <p className="auth-subtitle">Create your e-wallet to deposit, pay bills, and withdraw</p>
         <form onSubmit={handleSubmit} className="auth-form">
           <label className="auth-label">
             Name
@@ -90,6 +95,24 @@ export function Register() {
               required
               autoComplete="new-password"
             />
+          </label>
+          <label className="auth-checkbox-label">
+            <input
+              type="checkbox"
+              checked={agreedToTerms}
+              onChange={(e) => setAgreedToTerms(e.target.checked)}
+              className="auth-checkbox"
+            />
+            <span>
+              I agree to the{' '}
+              <Link to="/privacy" target="_blank" rel="noopener noreferrer">
+                Privacy Policy
+              </Link>{' '}
+              and{' '}
+              <Link to="/terms" target="_blank" rel="noopener noreferrer">
+                Terms of Service
+              </Link>
+            </span>
           </label>
           {error && <p className="auth-error">{error}</p>}
           <button type="submit" className="auth-submit">
