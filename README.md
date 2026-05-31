@@ -19,7 +19,31 @@ npm run build
 
 Output is in the `dist/` folder.
 
-## Deploy
+## Deploy (frontend + backend)
+
+This app has two parts:
+
+| Part | Host | Notes |
+|------|------|--------|
+| **Frontend** | Vercel / Netlify | Static SPA from `dist/` |
+| **Backend API** | [Render](https://render.com) (recommended) | Express + SQLite — see `render.yaml` |
+
+### Backend on Render
+
+1. Push this repo to GitHub.
+2. In Render: **New → Blueprint** and connect the repo (uses `render.yaml`), or create a **Web Service** with root directory `server`.
+3. Set **Build:** `npm install && npm run build`, **Start:** `npm start`.
+4. Add env vars: `JWT_SECRET` (random string), `CORS_ORIGINS` (your Vercel URL, e.g. `https://wallet-app-s9io.vercel.app`).
+
+### Frontend on Vercel
+
+1. Import the repo on Vercel (build: `npm run build`, output: `dist`).
+2. Add environment variable: **`VITE_API_URL`** = your Render API URL (e.g. `https://wallet-app-api.onrender.com`).
+3. Redeploy.
+
+Without `VITE_API_URL`, the frontend only talks to `/api` on the same origin (works locally via Vite proxy, not on static Vercel alone).
+
+## Deploy (static only)
 
 The app is a static SPA. You can deploy the `dist/` folder to any static host.
 

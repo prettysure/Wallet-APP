@@ -1,86 +1,102 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from 'react'
+import { api, type ApiTransaction } from '../api/client'
 import { useAuth } from './AuthContext'
 
-export type TransactionStatus = 'Completed' | 'Pending' | 'Failed'
-export type TransactionBusiness = 'Deposit' | 'Withdrawal' | 'Payment'
-
-export interface WalletTransaction {
-  id: string
-  userEmail: string
-  reference: string
-  status: TransactionStatus
-  totalAmount: number
-  fee: number
-  netAmountCredit: number
-  createdAt: string
-  businessDescription: TransactionBusiness
-  method?: 'ewallet' | 'bank' | 'crypto'
-  ewalletProvider?: 'paypal' | 'gpay'
-  bankCountry?: 'us' | 'uk' | 'sg'
-  bankName?: string
-  cryptoAsset?: 'tron-usdt' | 'tron-usdc'
-  walletAddress?: string
-}
+export type TransactionStatus = ApiTransaction['status']
+export type TransactionBusiness = ApiTransaction['businessDescription']
+export type WalletTransaction = ApiTransaction
 
 interface TransactionsContextValue {
   transactions: WalletTransaction[]
-  addTransaction: (tx: Omit<WalletTransaction, 'id'>) => void
-  clearMyTransactions: () => void
   balance: number
+  totalDeposit: number
+  totalWithdrawal: number
+  totalPayment: number
+  loading: boolean
+  addTransaction: (tx: Omit<WalletTransaction, 'id' | 'userEmail'>) => Promise<void>
+  refreshTransactions: () => Promise<void>
 }
-
-const STORAGE_KEY = 'wallet-app-transactions'
 
 const TransactionsContext = createContext<TransactionsContextValue | null>(null)
 
-function loadAll(): WalletTransaction[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return []
-    const parsed = JSON.parse(raw) as WalletTransaction[]
-    return Array.isArray(parsed) ? parsed : []
-  } catch {
-    return []
-  }
-}
-
 export function TransactionsProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth()
-  const [allTransactions, setAllTransactions] = useState<WalletTransaction[]>(loadAll)
+  const [transactions, setTransactions] = useState<WalletTransaction[]>([])
+  const [balance, setBalance] = useState(0)
+  const [totalDeposit, setTotalDeposit] = useState(0)
+  const [totalWithdrawal, setTotalWithdrawal] = useState(0)
+  const [totalPayment, setTotalPayment] = useState(0)
+  const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(allTransactions))
-  }, [allTransactions])
-
-  const transactions = useMemo(() => {
-    if (!user) return []
-    return allTransactions
-      .filter((t) => t.userEmail === user.email)
-      .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
-  }, [allTransactions, user])
-
-  const balance = useMemo(() => {
-    return transactions.reduce((acc, t) => {
-      if (t.businessDescription === 'Deposit') {
-        return acc + t.netAmountCredit
-      }
-      if (t.businessDescription === 'Withdrawal' || t.businessDescription === 'Payment') {
-        return acc - t.netAmountCredit
-      }
-      return acc
-    }, 0)
-  }, [transactions])
-
-  const addTransaction = useCallback((tx: Omit<WalletTransaction, 'id'>) => {
-    setAllTransactions((prev) => [{ ...tx, id: crypto.randomUUID() }, ...prev])
+  const applyResponse = useCallback((data: Awaited<ReturnType<typeof api.getTransactions>>) => {
+    setTransactions(data.transactions)
+    setBalance(data.balance)
+    setTotalDeposit(data.totalDeposit)
+    setTotalWithdrawal(data.totalWithdrawal)
+    setTotalPayment(data.totalPayment)
   }, [])
 
-  const clearMyTransactions = useCallback(() => {
-    setAllTransactions((prev) => prev.filter((t) => t.userEmail !== user?.email))
-  }, [user?.email])
+  const refreshTransactions = useCallback(async () => {
+    if (!user) {
+      setTransactions([])
+      setBalance(0)
+      setTotalDeposit(0)
+      setTotalWithdrawal(0)
+      setTotalPayment(0)
+      return
+    }
+
+    setLoading(true)
+    try {
+      const data = await api.getTransactions()
+      applyResponse(data)
+    } finally {
+      setLoading(false)
+    }
+  }, [user, applyResponse])
+
+  useEffect(() => {
+    refreshTransactions()
+  }, [refreshTransactions])
+
+  const addTransaction = useCallback(
+    async (tx: Omit<WalletTransaction, 'id' | 'userEmail'>) => {
+      const { transaction } = await api.createTransaction(tx)
+      setTransactions((prev) => [transaction, ...prev])
+      if (transaction.businessDescription === 'Deposit') {
+        setBalance((b) => Number((b + transaction.netAmountCredit).toFixed(2)))
+        setTotalDeposit((d) => Number((d + transaction.totalAmount).toFixed(2)))
+      } else if (transaction.businessDescription === 'Withdrawal') {
+        setBalance((b) => Number((b - transaction.netAmountCredit).toFixed(2)))
+        setTotalWithdrawal((w) => Number((w + transaction.totalAmount).toFixed(2)))
+      } else {
+        setBalance((b) => Number((b - transaction.netAmountCredit).toFixed(2)))
+        setTotalPayment((p) => Number((p + transaction.totalAmount).toFixed(2)))
+      }
+    },
+    [],
+  )
 
   return (
-    <TransactionsContext.Provider value={{ transactions, addTransaction, clearMyTransactions, balance }}>
+    <TransactionsContext.Provider
+      value={{
+        transactions,
+        balance,
+        totalDeposit,
+        totalWithdrawal,
+        totalPayment,
+        loading,
+        addTransaction,
+        refreshTransactions,
+      }}
+    >
       {children}
     </TransactionsContext.Provider>
   )
@@ -91,4 +107,3 @@ export function useTransactions() {
   if (!ctx) throw new Error('useTransactions must be used within TransactionsProvider')
   return ctx
 }
-

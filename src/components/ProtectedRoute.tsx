@@ -6,8 +6,16 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { user } = useAuth()
+  const { user, loading } = useAuth()
   const location = useLocation()
+
+  if (loading) {
+    return (
+      <div className="auth-page">
+        <p className="auth-subtitle">Loading…</p>
+      </div>
+    )
+  }
 
   if (!user) {
     return <Navigate to="/login" state={{ from: location }} replace />

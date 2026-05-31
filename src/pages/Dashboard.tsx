@@ -219,10 +219,9 @@ export function Dashboard() {
       <DepositFlowModal
         open={depositOpen}
         onClose={() => setDepositOpen(false)}
-        onConfirm={(result) => {
+        onConfirm={async (result) => {
           if (!user) return
-          addTransaction({
-            userEmail: user.email,
+          await addTransaction({
             reference: result.reference,
             status: 'Completed',
             totalAmount: result.amount,
@@ -243,10 +242,9 @@ export function Dashboard() {
         open={withdrawOpen}
         currentBalance={balance}
         onClose={() => setWithdrawOpen(false)}
-        onConfirm={(result) => {
+        onConfirm={async (result) => {
           if (!user) return
-          addTransaction({
-            userEmail: user.email,
+          await addTransaction({
             reference: result.reference,
             status: 'Completed',
             totalAmount: result.amount,
@@ -267,10 +265,9 @@ export function Dashboard() {
         open={transferOpen}
         currentBalance={balance}
         onClose={() => setTransferOpen(false)}
-        onConfirm={(result) => {
+        onConfirm={async (result) => {
           if (!user) return
-          addTransaction({
-            userEmail: user.email,
+          await addTransaction({
             reference: result.reference,
             status: 'Completed',
             totalAmount: result.amount,
