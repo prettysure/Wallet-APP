@@ -1,0 +1,13 @@
+# SQLite database (created automatically)
+data/
+*.db
+*.db-wal
+*.db-shm
+
+# Environment
+.env
+.env.local
+
+# Build
+dist/
+node_modules/

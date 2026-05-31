@@ -8,25 +8,31 @@ export function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const { user, login } = useAuth()
+  const [submitting, setSubmitting] = useState(false)
+  const { user, loading, login } = useAuth()
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (user) navigate('/', { replace: true })
-  }, [user, navigate])
+    if (!loading && user) navigate('/', { replace: true })
+  }, [user, loading, navigate])
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError('')
     if (!isValidEmail(email.trim())) {
       setError(EMAIL_VALIDATION_MESSAGE)
       return
     }
-    const result = login(email.trim(), password)
-    if (result.ok) {
-      navigate('/', { replace: true })
-    } else {
-      setError(result.error ?? 'Login failed')
+    setSubmitting(true)
+    try {
+      const result = await login(email.trim(), password)
+      if (result.ok) {
+        navigate('/', { replace: true })
+      } else {
+        setError(result.error ?? 'Login failed')
+      }
+    } finally {
+      setSubmitting(false)
     }
   }
 
@@ -61,8 +67,8 @@ export function Login() {
             />
           </label>
           {error && <p className="auth-error">{error}</p>}
-          <button type="submit" className="auth-submit">
-            Sign in
+          <button type="submit" className="auth-submit" disabled={submitting || loading}>
+            {submitting ? 'Signing in…' : 'Sign in'}
           </button>
         </form>
         <p className="auth-switch">

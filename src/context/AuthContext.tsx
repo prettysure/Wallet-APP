@@ -1,7 +1,13 @@
-import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react'
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from 'react'
+import { api, setToken, getToken, ApiError } from '../api/client'
 import { isValidEmail, EMAIL_VALIDATION_MESSAGE } from '../utils/email'
-
-const STORAGE_KEY = 'wallet-app-user'
 
 export interface User {
   id: string
@@ -11,73 +17,91 @@ export interface User {
 
 interface AuthContextValue {
   user: User | null
-  login: (email: string, password: string) => { ok: boolean; error?: string }
-  register: (name: string, email: string, password: string) => { ok: boolean; error?: string }
+  loading: boolean
+  login: (email: string, password: string) => Promise<{ ok: boolean; error?: string }>
+  register: (
+    name: string,
+    email: string,
+    password: string,
+  ) => Promise<{ ok: boolean; error?: string }>
   logout: () => void
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 
-const usersStore = new Map<string, { user: User; password: string }>()
-
-function loadStoredUser(): User | null {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return null
-    return JSON.parse(raw) as User
-  } catch {
-    return null
-  }
-}
-
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(loadStoredUser)
+  const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (user) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(user))
-    } else {
-      localStorage.removeItem(STORAGE_KEY)
-    }
-  }, [user])
+    let cancelled = false
 
-  const login = useCallback((email: string, password: string) => {
-    const key = email.trim().toLowerCase()
-    if (!isValidEmail(key)) {
-      return { ok: false, error: EMAIL_VALIDATION_MESSAGE }
+    async function restoreSession() {
+      if (!getToken()) {
+        setLoading(false)
+        return
+      }
+
+      try {
+        const { user: me } = await api.me()
+        if (!cancelled) setUser(me)
+      } catch {
+        setToken(null)
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
     }
-    const stored = usersStore.get(key)
-    if (!stored || stored.password !== password) {
-      return { ok: false, error: 'Invalid email or password' }
+
+    restoreSession()
+    return () => {
+      cancelled = true
     }
-    setUser(stored.user)
-    return { ok: true }
   }, [])
 
-  const register = useCallback((name: string, email: string, password: string) => {
+  const login = useCallback(async (email: string, password: string) => {
     const key = email.trim().toLowerCase()
     if (!isValidEmail(key)) {
       return { ok: false, error: EMAIL_VALIDATION_MESSAGE }
     }
-    if (usersStore.has(key)) {
-      return { ok: false, error: 'This email is already registered. Please sign in or use a different email.' }
+
+    try {
+      const { token, user: loggedIn } = await api.login(key, password)
+      setToken(token)
+      setUser(loggedIn)
+      return { ok: true }
+    } catch (err) {
+      const message =
+        err instanceof ApiError ? err.message : 'Login failed. Please try again.'
+      return { ok: false, error: message }
+    }
+  }, [])
+
+  const register = useCallback(async (name: string, email: string, password: string) => {
+    const key = email.trim().toLowerCase()
+    if (!isValidEmail(key)) {
+      return { ok: false, error: EMAIL_VALIDATION_MESSAGE }
     }
     if (password.length < 6) {
       return { ok: false, error: 'Password must be at least 6 characters' }
     }
-    const user: User = {
-      id: crypto.randomUUID(),
-      name: name.trim(),
-      email: key,
+
+    try {
+      await api.register(name.trim(), key, password)
+      return { ok: true }
+    } catch (err) {
+      const message =
+        err instanceof ApiError ? err.message : 'Registration failed. Please try again.'
+      return { ok: false, error: message }
     }
-    usersStore.set(key, { user, password })
-    return { ok: true }
   }, [])
 
-  const logout = useCallback(() => setUser(null), [])
+  const logout = useCallback(() => {
+    setToken(null)
+    setUser(null)
+  }, [])
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   )

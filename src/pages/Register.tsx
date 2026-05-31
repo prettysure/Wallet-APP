@@ -11,14 +11,15 @@ export function Register() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [agreedToTerms, setAgreedToTerms] = useState(false)
   const [error, setError] = useState('')
-  const { user, register } = useAuth()
+  const [submitting, setSubmitting] = useState(false)
+  const { user, loading, register } = useAuth()
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (user) navigate('/', { replace: true })
-  }, [user, navigate])
+    if (!loading && user) navigate('/', { replace: true })
+  }, [user, loading, navigate])
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError('')
     if (!isValidEmail(email.trim())) {
@@ -33,11 +34,16 @@ export function Register() {
       setError('Please agree to the Privacy Policy and Terms of Service')
       return
     }
-    const result = register(name.trim(), email.trim(), password)
-    if (result.ok) {
-      navigate('/login', { replace: true })
-    } else {
-      setError(result.error ?? 'Registration failed')
+    setSubmitting(true)
+    try {
+      const result = await register(name.trim(), email.trim(), password)
+      if (result.ok) {
+        navigate('/login', { replace: true })
+      } else {
+        setError(result.error ?? 'Registration failed')
+      }
+    } finally {
+      setSubmitting(false)
     }
   }
 
@@ -115,8 +121,8 @@ export function Register() {
             </span>
           </label>
           {error && <p className="auth-error">{error}</p>}
-          <button type="submit" className="auth-submit">
-            Create account
+          <button type="submit" className="auth-submit" disabled={submitting || loading}>
+            {submitting ? 'Creating account…' : 'Create account'}
           </button>
         </form>
         <p className="auth-switch">
